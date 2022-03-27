@@ -53,7 +53,7 @@ public class UserDataService {
         return userDataResponse;
     }
 
-    public UserDataResponse getUserData(Long userId) {
+    public UserDataResponse getUserData(String phoneNumber) {
         UserData userData = new UserData();
         UserDataResponse userDataResponse = UserDataResponse.builder()
                 .createdDate(LocalDateTime.now())
@@ -62,21 +62,21 @@ public class UserDataService {
                 .build();
 
         try {
-            userData = (UserData) remoteCacheManager.getCache(CACHE_NAME_USER_DATA).get(userId);
+            userData = (UserData) remoteCacheManager.getCache(CACHE_NAME_USER_DATA).get(phoneNumber);
 
             if (ObjectUtils.isEmpty(userData)) {
-                userData = userRepository.findById(userId).orElse(new UserData());
+                userData = userRepository.findByPhoneNumber(phoneNumber).orElse(new UserData());
                 if (ObjectUtils.isEmpty(userData)) {
                     userDataResponse.setStatus("Failed");
                     userDataResponse.setDescription("User not found");
                 } else {
-                    remoteCacheManager.getCache(CACHE_NAME_USER_DATA).put(userId, userData);
+                    remoteCacheManager.getCache(CACHE_NAME_USER_DATA).put(phoneNumber, userData);
                 }
             }
 
             userDataResponse.setUserData(userData);
         } catch (Exception ex) {
-            log.info("Exception happened when get user data with user id: {}, detail: {}", userId, ex);
+            log.info("Exception happened when get user data with user id: {}, detail: {}", phoneNumber, ex);
             throw ex;
         }
 
