@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @Builder
@@ -34,4 +35,10 @@ public class UserData implements Serializable {
 
     @Column(name = "BALANCE", length = 100)
     private BigDecimal accountBalance;
+
+    @Column(name = "CREATED_DATE")
+    private Date createDate;
+
+    @Column(name = "MODIFIED_DATE")
+    private Date modifiedDate;
 }
